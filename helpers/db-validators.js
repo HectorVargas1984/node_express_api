@@ -24,7 +24,7 @@ const emailExiste = async (email = "") => {
 const idExiste = async (id = "") => {
   const idusuario = await Usuario.findByPk(id);
 
-  if (idusuario) {
+  if (!idusuario) {
     throw new Error(`El id ${id} no existe en en la Base de datos`);
   }
 };

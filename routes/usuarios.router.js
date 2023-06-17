@@ -44,6 +44,10 @@ router.post(
   usuariosPost
 );
 
-router.delete("/:id", usuariosDelete);
+router.delete(
+  "/:id",
+  [check("id").custom((id) => idExiste(id)), validarCampos],
+  usuariosDelete
+);
 
 module.exports = router;

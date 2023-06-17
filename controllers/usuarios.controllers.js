@@ -3,13 +3,38 @@ const { Usuario } = require("./../models/usuario");
 const bcryotjs = require("bcryptjs");
 const { v4: uuidv4 } = require("uuid");
 
-const usuariosGet = (req = request, res = response) => {
-  const queryParams = req.query;
+const usuariosGet = async (req = request, res = response) => {
+  const { limite = 5, page = 0 } = req.query;
 
-  res.json({
-    msg: "get API - controlador",
-    queryParams,
-  });
+  const offset = (page - 1) * limite;
+
+  const estado = { estado: true };
+
+  try {
+    const usuarios = await Usuario.findAll({
+      where: estado,
+      limit: Number(limite),
+      offset: offset,
+    });
+
+    if (usuarios) {
+      res.status(200).json({
+        status: "OK",
+        totalRegistros: usuarios.length,
+        data: usuarios,
+      });
+    } else {
+      res.status(404).json({
+        status: "OK",
+        msg: "No hay usuarios que monstrar",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      msg: "ocurrio un error en la base de datos",
+    });
+  }
 };
 
 const usuariosPost = async (req = request, res = response) => {
@@ -85,13 +110,24 @@ const usuariosPut = async (req = request, res = response) => {
   }
 };
 
-const usuariosDelete = (req = request, res = response) => {
+const usuariosDelete = async (req = request, res = response) => {
   const { id } = req.params;
 
-  res.json({
-    msg: "delete API - controlador",
-    id,
-  });
+  const estado = { estado: false };
+
+  try {
+    await Usuario.update(estado, { where: { id: id } });
+
+    res.status(200).json({
+      status: "OK",
+      msg: `El usuario id: ${id}, a sido dado de baja`,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      msg: "ocurrio un error en la base de datos",
+    });
+  }
 };
 
 module.exports = {
