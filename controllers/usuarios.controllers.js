@@ -12,6 +12,7 @@ const usuariosGet = async (req = request, res = response) => {
 
   try {
     const usuarios = await Usuario.findAll({
+      attributes: ["id", "nombre", "email", "img", "role", "estado", "google"],
       where: estado,
       limit: Number(limite),
       offset: offset,
@@ -100,7 +101,7 @@ const usuariosPut = async (req = request, res = response) => {
 
     res.status(201).json({
       status: "OK",
-      msg: `Usuario ${id}, actualizado con exito`,
+      msg: `Usuario ${idDb}, actualizado con exito`,
     });
   } catch (error) {
     console.error(error);
@@ -113,6 +114,9 @@ const usuariosPut = async (req = request, res = response) => {
 const usuariosDelete = async (req = request, res = response) => {
   const { id } = req.params;
 
+  const uid = req.uid;
+  const usuarioAutentificado = req.usuario;
+
   const estado = { estado: false };
 
   try {
@@ -121,6 +125,8 @@ const usuariosDelete = async (req = request, res = response) => {
     res.status(200).json({
       status: "OK",
       msg: `El usuario id: ${id}, a sido dado de baja`,
+
+      usuarioAutentificado,
     });
   } catch (error) {
     console.error(error);

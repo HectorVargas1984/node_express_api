@@ -20,6 +20,14 @@ const emailExiste = async (email = "") => {
   }
 };
 
+const emailExisteLogin = async (email = "") => {
+  const existeEmail = await Usuario.findOne({ where: { email } });
+
+  if (!existeEmail) {
+    throw new Error(`El e-mail ${email} no exixte en la base de datos`);
+  }
+};
+
 //Valida el id
 const idExiste = async (id = "") => {
   const idusuario = await Usuario.findByPk(id);
@@ -29,8 +37,17 @@ const idExiste = async (id = "") => {
   }
 };
 
+// estado del usuario valido (true)
+// const estadoValido = async (id = "") => {
+//   const estado = await Usuario.findByPk(id, {
+//     attributes: ["estado", "nombre"],
+//   });
+//   console.log("estado", estado);
+// };
+
 module.exports = {
   esRoleValido,
   emailExiste,
   idExiste,
+  emailExisteLogin,
 };
